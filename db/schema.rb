@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_10_07_152758) do
+ActiveRecord::Schema[8.0].define(version: 2025_10_07_161844) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -37,6 +37,28 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_07_152758) do
     t.index ["roast_type"], name: "index_coffees_on_roast_type"
   end
 
+  create_table "order_items", force: :cascade do |t|
+    t.bigint "order_id", null: false
+    t.bigint "coffee_variant_id", null: false
+    t.integer "quantity", default: 1, null: false
+    t.decimal "price", precision: 10, scale: 2, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["coffee_variant_id"], name: "index_order_items_on_coffee_variant_id"
+    t.index ["order_id", "coffee_variant_id"], name: "index_order_items_on_order_id_and_coffee_variant_id", unique: true
+    t.index ["order_id"], name: "index_order_items_on_order_id"
+  end
+
+  create_table "orders", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.string "status", default: "cart", null: false
+    t.decimal "total", precision: 10, scale: 2, default: "0.0", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id", "status"], name: "index_orders_on_user_id_and_status"
+    t.index ["user_id"], name: "index_orders_on_user_id"
+  end
+
   create_table "sessions", force: :cascade do |t|
     t.bigint "user_id", null: false
     t.string "ip_address"
@@ -55,5 +77,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_07_152758) do
   end
 
   add_foreign_key "coffee_variants", "coffees"
+  add_foreign_key "order_items", "coffee_variants"
+  add_foreign_key "order_items", "orders"
+  add_foreign_key "orders", "users"
   add_foreign_key "sessions", "users"
 end

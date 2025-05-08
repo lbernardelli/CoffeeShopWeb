@@ -1,4 +1,9 @@
 Rails.application.routes.draw do
+  resource :cart, only: [:show] do
+    post :add_item
+    delete :remove_item
+    patch :update_quantity
+  end
   resources :coffees, only: [:index, :show]
   get "home/index"
   resource :session
