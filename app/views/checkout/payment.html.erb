@@ -1,0 +1,188 @@
+<nav class="bg-white shadow-sm sticky top-0 z-50">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex justify-between items-center h-16">
+      <div class="flex items-center">
+        <%= link_to root_path, class: "text-2xl font-bold text-amber-600" do %>
+          ☕ CoffeeShop
+        <% end %>
+      </div>
+      <div class="flex items-center space-x-4">
+        <% if Current.user %>
+          <span class="text-gray-600"><%= Current.user.email_address %></span>
+          <%= button_to "Logout", session_path, method: :delete, class: "text-gray-600 hover:text-gray-900" %>
+        <% else %>
+          <%= link_to "Login", new_session_path, class: "text-gray-600 hover:text-gray-900" %>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12 bg-gray-50 min-h-screen">
+  <div class="mb-8">
+    <div class="flex items-center justify-center gap-4">
+      <div class="flex items-center">
+        <div class="w-10 h-10 bg-green-600 text-white rounded-full flex items-center justify-center">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/>
+          </svg>
+        </div>
+        <span class="ml-2 text-gray-600">Shipping</span>
+      </div>
+      <div class="w-16 h-1 bg-amber-600"></div>
+      <div class="flex items-center">
+        <div class="w-10 h-10 bg-amber-600 text-white rounded-full flex items-center justify-center font-bold">
+          2
+        </div>
+        <span class="ml-2 font-semibold text-amber-600">Payment</span>
+      </div>
+      <div class="w-16 h-1 bg-gray-300"></div>
+      <div class="flex items-center">
+        <div class="w-10 h-10 bg-gray-300 text-white rounded-full flex items-center justify-center font-bold">
+          3
+        </div>
+        <span class="ml-2 text-gray-500">Confirmation</span>
+      </div>
+    </div>
+  </div>
+
+  <% if flash[:alert] %>
+    <div class="mb-6 bg-red-50 border border-red-200 text-red-800 px-6 py-4 rounded-lg">
+      <%= flash[:alert] %>
+    </div>
+  <% end %>
+
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+    <div class="lg:col-span-2 space-y-6">
+      <div class="bg-white rounded-xl shadow-sm p-6">
+        <div class="flex justify-between items-start mb-4">
+          <h2 class="text-xl font-bold text-gray-900">Shipping Address</h2>
+          <%= link_to "Edit", checkout_shipping_path, class: "text-amber-600 hover:text-amber-700 font-semibold" %>
+        </div>
+        <div class="text-gray-700">
+          <p class="font-semibold"><%= @cart.shipping_name %></p>
+          <p><%= @cart.shipping_address %></p>
+          <p><%= @cart.shipping_city %>, <%= @cart.shipping_state %> <%= @cart.shipping_zip %></p>
+          <p><%= @cart.shipping_country %></p>
+        </div>
+      </div>
+
+      <div class="bg-white rounded-xl shadow-sm p-8">
+        <h1 class="text-3xl font-bold text-gray-900 mb-6">Payment Information</h1>
+
+        <div class="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+          <p class="text-sm text-blue-800">
+            <strong>Test Mode:</strong> Use card number <code class="bg-white px-2 py-1 rounded">4111111111111111</code> for approved payment,
+            or <code class="bg-white px-2 py-1 rounded">4000000000000002</code> for declined payment.
+          </p>
+        </div>
+
+        <%= form_with url: checkout_process_path, method: :post, local: true do |f| %>
+          <%= hidden_field_tag "shipping[name]", @cart.shipping_name %>
+          <%= hidden_field_tag "shipping[address]", @cart.shipping_address %>
+          <%= hidden_field_tag "shipping[city]", @cart.shipping_city %>
+          <%= hidden_field_tag "shipping[state]", @cart.shipping_state %>
+          <%= hidden_field_tag "shipping[zip]", @cart.shipping_zip %>
+          <%= hidden_field_tag "shipping[country]", @cart.shipping_country %>
+
+          <div class="space-y-4">
+            <div>
+              <%= f.label :payment_cardholder_name, "Cardholder Name", class: "block text-sm font-semibold text-gray-700 mb-2" %>
+              <%= f.text_field "payment[cardholder_name]",
+                  class: "w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-600 focus:border-transparent",
+                  placeholder: "John Doe",
+                  required: true %>
+            </div>
+
+            <div>
+              <%= f.label :payment_card_number, "Card Number", class: "block text-sm font-semibold text-gray-700 mb-2" %>
+              <%= f.text_field "payment[card_number]",
+                  class: "w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-600 focus:border-transparent",
+                  placeholder: "4111 1111 1111 1111",
+                  maxlength: 19,
+                  required: true %>
+            </div>
+
+            <div class="grid grid-cols-3 gap-4">
+              <div>
+                <%= f.label :payment_expiry_month, "Month", class: "block text-sm font-semibold text-gray-700 mb-2" %>
+                <%= f.select "payment[expiry_month]",
+                    options_for_select((1..12).map { |m| [m.to_s.rjust(2, '0'), m.to_s.rjust(2, '0')] }),
+                    {},
+                    class: "w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-600 focus:border-transparent",
+                    required: true %>
+              </div>
+
+              <div>
+                <%= f.label :payment_expiry_year, "Year", class: "block text-sm font-semibold text-gray-700 mb-2" %>
+                <%= f.select "payment[expiry_year]",
+                    options_for_select((Time.current.year..(Time.current.year + 10)).map { |y| [y.to_s, y.to_s] }),
+                    {},
+                    class: "w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-600 focus:border-transparent",
+                    required: true %>
+              </div>
+
+              <div>
+                <%= f.label :payment_cvv, "CVV", class: "block text-sm font-semibold text-gray-700 mb-2" %>
+                <%= f.text_field "payment[cvv]",
+                    class: "w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-600 focus:border-transparent",
+                    placeholder: "123",
+                    maxlength: 4,
+                    required: true %>
+              </div>
+            </div>
+          </div>
+
+          <div class="flex gap-4 mt-8">
+            <%= link_to "Back to Shipping", checkout_shipping_path, class: "flex-1 py-3 px-4 border border-gray-300 rounded-lg font-semibold text-gray-700 hover:bg-gray-50 transition text-center" %>
+            <%= f.submit "Place Order", class: "flex-1 py-3 px-4 bg-amber-600 text-white rounded-lg font-semibold hover:bg-amber-700 transition cursor-pointer" %>
+          </div>
+
+          <div class="mt-4 flex items-center justify-center gap-2 text-sm text-gray-600">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+            </svg>
+            <span>Your payment information is secure</span>
+          </div>
+        <% end %>
+      </div>
+    </div>
+
+    <div class="lg:col-span-1">
+      <div class="bg-white rounded-xl shadow-sm p-6 sticky top-24">
+        <h2 class="text-xl font-bold text-gray-900 mb-4">Order Summary</h2>
+
+        <div class="space-y-3 mb-4 pb-4 border-b border-gray-200">
+          <% @cart.order_items.each do |item| %>
+            <div class="flex justify-between text-sm">
+              <span class="text-gray-600"><%= item.coffee_name %> (<%= item.size.titleize %>) × <%= item.quantity %></span>
+              <span class="font-semibold text-gray-900">$<%= number_with_precision(item.subtotal, precision: 2) %></span>
+            </div>
+          <% end %>
+        </div>
+
+        <div class="space-y-2 mb-4 pb-4 border-b border-gray-200">
+          <div class="flex justify-between text-sm text-gray-600">
+            <span>Subtotal</span>
+            <span class="font-semibold">$<%= number_with_precision(@cart.subtotal, precision: 2) %></span>
+          </div>
+          <div class="flex justify-between text-sm text-gray-600">
+            <span>Shipping</span>
+            <span class="font-semibold text-green-600"><%= @cart.shipping_cost == 0 ? 'FREE' : "$#{number_with_precision(@cart.shipping_cost, precision: 2)}" %></span>
+          </div>
+          <div class="flex justify-between text-sm text-gray-600">
+            <span>Tax</span>
+            <span class="font-semibold">$<%= number_with_precision(@cart.tax, precision: 2) %></span>
+          </div>
+        </div>
+
+        <div class="flex justify-between items-center">
+          <span class="text-lg font-bold text-gray-900">Total</span>
+          <span class="text-2xl font-bold text-amber-600">
+            $<%= number_with_precision(@cart.grand_total, precision: 2) %>
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

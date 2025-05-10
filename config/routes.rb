@@ -4,6 +4,14 @@ Rails.application.routes.draw do
     delete :remove_item
     patch :update_quantity
   end
+
+  # Checkout flow
+  get "checkout", to: "checkout#new", as: :checkout
+  get "checkout/shipping", to: "checkout#shipping", as: :checkout_shipping
+  get "checkout/payment", to: "checkout#payment", as: :checkout_payment
+  post "checkout/process", to: "checkout#process_checkout", as: :checkout_process
+  get "checkout/confirmation", to: "checkout#confirmation", as: :checkout_confirmation
+
   resources :coffees, only: [:index, :show]
   get "home/index"
   resource :session

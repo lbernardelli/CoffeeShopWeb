@@ -1,0 +1,168 @@
+<nav class="bg-white shadow-sm sticky top-0 z-50">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex justify-between items-center h-16">
+      <div class="flex items-center">
+        <%= link_to root_path, class: "text-2xl font-bold text-amber-600" do %>
+          ☕ CoffeeShop
+        <% end %>
+      </div>
+      <div class="flex items-center space-x-4">
+        <% if Current.user %>
+          <span class="text-gray-600"><%= Current.user.email_address %></span>
+          <%= button_to "Logout", session_path, method: :delete, class: "text-gray-600 hover:text-gray-900" %>
+        <% else %>
+          <%= link_to "Login", new_session_path, class: "text-gray-600 hover:text-gray-900" %>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12 bg-gray-50 min-h-screen">
+  <div class="text-center mb-12">
+    <div class="inline-flex items-center justify-center w-20 h-20 bg-green-100 rounded-full mb-4">
+      <svg class="w-12 h-12 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+      </svg>
+    </div>
+    <h1 class="text-4xl font-bold text-gray-900 mb-2">Order Confirmed!</h1>
+    <p class="text-xl text-gray-600">Thank you for your purchase</p>
+    <p class="text-lg text-gray-500 mt-2">Order #<%= @order.id %></p>
+  </div>
+
+  <div class="mb-8">
+    <div class="flex items-center justify-center gap-4">
+      <div class="flex items-center">
+        <div class="w-10 h-10 bg-green-600 text-white rounded-full flex items-center justify-center">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/>
+          </svg>
+        </div>
+        <span class="ml-2 text-gray-600">Shipping</span>
+      </div>
+      <div class="w-16 h-1 bg-green-600"></div>
+      <div class="flex items-center">
+        <div class="w-10 h-10 bg-green-600 text-white rounded-full flex items-center justify-center">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/>
+          </svg>
+        </div>
+        <span class="ml-2 text-gray-600">Payment</span>
+      </div>
+      <div class="w-16 h-1 bg-green-600"></div>
+      <div class="flex items-center">
+        <div class="w-10 h-10 bg-green-600 text-white rounded-full flex items-center justify-center">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/>
+          </svg>
+        </div>
+        <span class="ml-2 font-semibold text-green-600">Confirmation</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+    <div class="lg:col-span-2 space-y-6">
+      <div class="bg-white rounded-xl shadow-sm p-6">
+        <h2 class="text-2xl font-bold text-gray-900 mb-6">Order Items</h2>
+        <div class="space-y-4">
+          <% @order.order_items.each do |item| %>
+            <div class="flex justify-between items-center pb-4 border-b border-gray-200 last:border-0">
+              <div class="flex-1">
+                <h3 class="font-semibold text-gray-900"><%= item.coffee_name %></h3>
+                <p class="text-sm text-gray-600">
+                  <%= item.coffee_variant.coffee.roast_type&.titleize || "Medium" %> Roast •
+                  <%= item.size.titleize %> •
+                  Quantity: <%= item.quantity %>
+                </p>
+              </div>
+              <span class="text-lg font-bold text-amber-600">$<%= number_with_precision(item.subtotal, precision: 2) %></span>
+            </div>
+          <% end %>
+        </div>
+      </div>
+
+      <div class="bg-white rounded-xl shadow-sm p-6">
+        <h2 class="text-xl font-bold text-gray-900 mb-4">Shipping Address</h2>
+        <div class="text-gray-700">
+          <p class="font-semibold"><%= @order.shipping_name %></p>
+          <p><%= @order.shipping_address %></p>
+          <p><%= @order.shipping_city %>, <%= @order.shipping_state %> <%= @order.shipping_zip %></p>
+          <p><%= @order.shipping_country %></p>
+        </div>
+      </div>
+
+      <div class="bg-white rounded-xl shadow-sm p-6">
+        <h2 class="text-xl font-bold text-gray-900 mb-4">Payment Information</h2>
+        <div class="text-gray-700">
+          <p class="font-semibold">Credit Card</p>
+          <p class="text-sm text-gray-600">Transaction ID: <%= @order.payment_transaction_id %></p>
+        </div>
+      </div>
+
+      <div class="bg-blue-50 border border-blue-200 rounded-xl p-6">
+        <h2 class="text-xl font-bold text-blue-900 mb-3">What's Next?</h2>
+        <ul class="space-y-2 text-blue-800">
+          <li class="flex items-start gap-2">
+            <svg class="w-5 h-5 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+            </svg>
+            <span>You'll receive an email confirmation shortly</span>
+          </li>
+          <li class="flex items-start gap-2">
+            <svg class="w-5 h-5 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+            </svg>
+            <span>Your order will be processed and shipped within 1-2 business days</span>
+          </li>
+          <li class="flex items-start gap-2">
+            <svg class="w-5 h-5 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+            </svg>
+            <span>Track your order status in the Orders section</span>
+          </li>
+        </ul>
+      </div>
+
+      <div class="flex gap-4">
+        <%= link_to "Continue Shopping", coffees_path, class: "flex-1 py-3 px-4 bg-amber-600 text-white rounded-lg font-semibold hover:bg-amber-700 transition text-center" %>
+        <a href="#" class="flex-1 py-3 px-4 border border-gray-300 rounded-lg font-semibold text-gray-700 hover:bg-gray-50 transition text-center">
+          View Orders
+        </a>
+      </div>
+    </div>
+
+    <div class="lg:col-span-1">
+      <div class="bg-white rounded-xl shadow-sm p-6 sticky top-24">
+        <h2 class="text-xl font-bold text-gray-900 mb-6">Order Summary</h2>
+
+        <div class="space-y-2 mb-4 pb-4 border-b border-gray-200">
+          <div class="flex justify-between text-sm text-gray-600">
+            <span>Subtotal</span>
+            <span class="font-semibold">$<%= number_with_precision(@order.subtotal, precision: 2) %></span>
+          </div>
+          <div class="flex justify-between text-sm text-gray-600">
+            <span>Shipping</span>
+            <span class="font-semibold text-green-600"><%= @order.shipping_cost == 0 ? 'FREE' : "$#{number_with_precision(@order.shipping_cost, precision: 2)}" %></span>
+          </div>
+          <div class="flex justify-between text-sm text-gray-600">
+            <span>Tax</span>
+            <span class="font-semibold">$<%= number_with_precision(@order.tax, precision: 2) %></span>
+          </div>
+        </div>
+
+        <div class="flex justify-between items-center mb-6">
+          <span class="text-lg font-bold text-gray-900">Total Paid</span>
+          <span class="text-2xl font-bold text-green-600">
+            $<%= number_with_precision(@order.grand_total, precision: 2) %>
+          </span>
+        </div>
+
+        <div class="text-center text-sm text-gray-600">
+          <p>Order placed on</p>
+          <p class="font-semibold"><%= @order.updated_at.strftime("%B %d, %Y at %I:%M %p") %></p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

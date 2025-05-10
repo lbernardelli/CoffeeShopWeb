@@ -1,0 +1,159 @@
+<nav class="bg-white shadow-sm sticky top-0 z-50">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex justify-between items-center h-16">
+      <div class="flex items-center">
+        <%= link_to root_path, class: "text-2xl font-bold text-amber-600" do %>
+          ☕ CoffeeShop
+        <% end %>
+      </div>
+      <div class="flex items-center space-x-4">
+        <% if Current.user %>
+          <span class="text-gray-600"><%= Current.user.email_address %></span>
+          <%= button_to "Logout", session_path, method: :delete, class: "text-gray-600 hover:text-gray-900" %>
+        <% else %>
+          <%= link_to "Login", new_session_path, class: "text-gray-600 hover:text-gray-900" %>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12 bg-gray-50 min-h-screen">
+  <div class="mb-8">
+    <div class="flex items-center justify-center gap-4">
+      <div class="flex items-center">
+        <div class="w-10 h-10 bg-amber-600 text-white rounded-full flex items-center justify-center font-bold">
+          1
+        </div>
+        <span class="ml-2 font-semibold text-amber-600">Shipping</span>
+      </div>
+      <div class="w-16 h-1 bg-gray-300"></div>
+      <div class="flex items-center">
+        <div class="w-10 h-10 bg-gray-300 text-white rounded-full flex items-center justify-center font-bold">
+          2
+        </div>
+        <span class="ml-2 text-gray-500">Payment</span>
+      </div>
+      <div class="w-16 h-1 bg-gray-300"></div>
+      <div class="flex items-center">
+        <div class="w-10 h-10 bg-gray-300 text-white rounded-full flex items-center justify-center font-bold">
+          3
+        </div>
+        <span class="ml-2 text-gray-500">Confirmation</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+    <div class="lg:col-span-2">
+      <div class="bg-white rounded-xl shadow-sm p-8">
+        <h1 class="text-3xl font-bold text-gray-900 mb-6">Shipping Information</h1>
+
+        <%= form_with url: checkout_payment_path, method: :get, local: true do |f| %>
+          <div class="space-y-4">
+            <div>
+              <%= f.label :shipping_name, "Full Name", class: "block text-sm font-semibold text-gray-700 mb-2" %>
+              <%= f.text_field "shipping[name]",
+                  value: @cart.shipping_name,
+                  class: "w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-600 focus:border-transparent",
+                  placeholder: "John Doe",
+                  required: true %>
+            </div>
+
+            <div>
+              <%= f.label :shipping_address, "Street Address", class: "block text-sm font-semibold text-gray-700 mb-2" %>
+              <%= f.text_area "shipping[address]",
+                  value: @cart.shipping_address,
+                  rows: 2,
+                  class: "w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-600 focus:border-transparent",
+                  placeholder: "123 Main St, Apt 4B",
+                  required: true %>
+            </div>
+
+            <div class="grid grid-cols-2 gap-4">
+              <div>
+                <%= f.label :shipping_city, "City", class: "block text-sm font-semibold text-gray-700 mb-2" %>
+                <%= f.text_field "shipping[city]",
+                    value: @cart.shipping_city,
+                    class: "w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-600 focus:border-transparent",
+                    placeholder: "New York",
+                    required: true %>
+              </div>
+
+              <div>
+                <%= f.label :shipping_state, "State", class: "block text-sm font-semibold text-gray-700 mb-2" %>
+                <%= f.text_field "shipping[state]",
+                    value: @cart.shipping_state,
+                    class: "w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-600 focus:border-transparent",
+                    placeholder: "NY",
+                    required: true %>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-4">
+              <div>
+                <%= f.label :shipping_zip, "ZIP Code", class: "block text-sm font-semibold text-gray-700 mb-2" %>
+                <%= f.text_field "shipping[zip]",
+                    value: @cart.shipping_zip,
+                    class: "w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-600 focus:border-transparent",
+                    placeholder: "10001",
+                    required: true %>
+              </div>
+
+              <div>
+                <%= f.label :shipping_country, "Country", class: "block text-sm font-semibold text-gray-700 mb-2" %>
+                <%= f.text_field "shipping[country]",
+                    value: @cart.shipping_country || "US",
+                    class: "w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-600 focus:border-transparent",
+                    placeholder: "US",
+                    required: true %>
+              </div>
+            </div>
+          </div>
+
+          <div class="flex gap-4 mt-8">
+            <%= link_to "Back to Cart", cart_path, class: "flex-1 py-3 px-4 border border-gray-300 rounded-lg font-semibold text-gray-700 hover:bg-gray-50 transition text-center" %>
+            <%= f.submit "Continue to Payment", class: "flex-1 py-3 px-4 bg-amber-600 text-white rounded-lg font-semibold hover:bg-amber-700 transition cursor-pointer" %>
+          </div>
+        <% end %>
+      </div>
+    </div>
+
+    <div class="lg:col-span-1">
+      <div class="bg-white rounded-xl shadow-sm p-6 sticky top-24">
+        <h2 class="text-xl font-bold text-gray-900 mb-4">Order Summary</h2>
+
+        <div class="space-y-3 mb-4 pb-4 border-b border-gray-200">
+          <% @cart.order_items.each do |item| %>
+            <div class="flex justify-between text-sm">
+              <span class="text-gray-600"><%= item.coffee_name %> (<%= item.size.titleize %>) × <%= item.quantity %></span>
+              <span class="font-semibold text-gray-900">$<%= number_with_precision(item.subtotal, precision: 2) %></span>
+            </div>
+          <% end %>
+        </div>
+
+        <div class="space-y-2 mb-4 pb-4 border-b border-gray-200">
+          <div class="flex justify-between text-sm text-gray-600">
+            <span>Subtotal</span>
+            <span class="font-semibold">$<%= number_with_precision(@cart.subtotal, precision: 2) %></span>
+          </div>
+          <div class="flex justify-between text-sm text-gray-600">
+            <span>Shipping</span>
+            <span class="font-semibold text-green-600"><%= @cart.shipping_cost == 0 ? 'FREE' : "$#{number_with_precision(@cart.shipping_cost, precision: 2)}" %></span>
+          </div>
+          <div class="flex justify-between text-sm text-gray-600">
+            <span>Tax</span>
+            <span class="font-semibold">$<%= number_with_precision(@cart.tax, precision: 2) %></span>
+          </div>
+        </div>
+
+        <div class="flex justify-between items-center">
+          <span class="text-lg font-bold text-gray-900">Total</span>
+          <span class="text-2xl font-bold text-amber-600">
+            $<%= number_with_precision(@cart.grand_total, precision: 2) %>
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
