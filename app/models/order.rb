@@ -13,8 +13,8 @@ class Order < ApplicationRecord
   validates :payment_method, presence: true, if: :completed?
   validates :payment_transaction_id, presence: true, if: :completed?
 
-  scope :cart, -> { where(status: 'cart') }
-  scope :completed, -> { where(status: 'completed') }
+  scope :cart, -> { where(status: "cart") }
+  scope :completed, -> { where(status: "completed") }
 
   def add_item(coffee_variant, quantity = 1)
     existing_item = order_items.find_by(coffee_variant: coffee_variant)
@@ -43,19 +43,19 @@ class Order < ApplicationRecord
   end
 
   def cart?
-    status == 'cart'
+    status == "cart"
   end
 
   def completed?
-    status == 'completed'
+    status == "completed"
   end
 
   def pending?
-    status == 'pending'
+    status == "pending"
   end
 
   def cancelled?
-    status == 'cancelled'
+    status == "cancelled"
   end
 
   def requires_shipping?

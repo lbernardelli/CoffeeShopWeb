@@ -79,8 +79,8 @@ module CoffeeApp
 
       def complete_order(payment_result)
         order.update!(
-          status: 'completed',
-          payment_method: 'credit_card',
+          status: "completed",
+          payment_method: "credit_card",
           payment_transaction_id: payment_result.transaction_id
         )
 

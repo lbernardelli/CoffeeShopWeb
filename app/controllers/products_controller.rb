@@ -1,5 +1,5 @@
 class ProductsController < ApplicationController
-  skip_before_action :authenticate, only: [:index, :show]
+  skip_before_action :authenticate, only: [ :index, :show ]
 
   def index
     @products = Product.active.order(:name)

@@ -1,5 +1,5 @@
 Rails.application.routes.draw do
-  resource :cart, only: [:show] do
+  resource :cart, only: [ :show ] do
     post :add_item
     delete :remove_item
     patch :update_quantity
@@ -12,7 +12,7 @@ Rails.application.routes.draw do
   post "checkout/process", to: "checkout#process_checkout", as: :checkout_process
   get "checkout/confirmation", to: "checkout#confirmation", as: :checkout_confirmation
 
-  resources :coffees, only: [:index, :show]
+  resources :coffees, only: [ :index, :show ]
   resource :session
   resources :passwords, param: :token
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html

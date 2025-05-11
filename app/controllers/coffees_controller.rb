@@ -1,5 +1,5 @@
 class CoffeesController < ApplicationController
-  allow_unauthenticated_access only: [:index, :show]
+  allow_unauthenticated_access only: [ :index, :show ]
 
   def index
     @coffees = Coffee.active.includes(:coffee_variants).order(:name)

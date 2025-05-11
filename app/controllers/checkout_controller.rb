@@ -4,14 +4,14 @@ class CheckoutController < ApplicationController
   def new
     unless @cart.has_items?
       redirect_to cart_path, alert: "Your cart is empty"
-      return
+      nil
     end
   end
 
   def shipping
     unless @cart.has_items?
       redirect_to cart_path, alert: "Your cart is empty"
-      return
+      nil
     end
   end
 
@@ -34,7 +34,7 @@ class CheckoutController < ApplicationController
 
     unless @cart.shipping_address_complete?
       redirect_to checkout_shipping_path, alert: "Please complete shipping information"
-      return
+      nil
     end
   end
 
@@ -47,7 +47,7 @@ class CheckoutController < ApplicationController
     )
 
     if result.success?
-      Current.user.orders.create!(status: 'cart')
+      Current.user.orders.create!(status: "cart")
 
       redirect_to checkout_confirmation_path(order_id: result.order.id),
                   notice: "Order placed successfully!"
