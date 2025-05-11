@@ -1,32 +1,4 @@
-<nav class="bg-white shadow-sm sticky top-0 z-50">
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-    <div class="flex justify-between items-center h-16">
-      <div class="flex items-center">
-        <%= link_to root_path, class: "text-2xl font-bold text-amber-600" do %>
-          ☕ CoffeeShop
-        <% end %>
-      </div>
-      <div class="hidden md:flex space-x-8">
-        <%= link_to "Home", root_path, class: "text-gray-600 hover:text-gray-900" %>
-        <%= link_to "Coffees", coffees_path, class: "text-gray-900 font-semibold border-b-2 border-amber-600" %>
-        <% if Current.user %>
-          <%= link_to "Cart (#{Current.user.current_cart.order_items.sum(:quantity)})", cart_path, class: "text-gray-600 hover:text-gray-900" %>
-        <% else %>
-          <%= link_to "Cart (0)", cart_path, class: "text-gray-600 hover:text-gray-900" %>
-        <% end %>
-        <a href="#" class="text-gray-600 hover:text-gray-900">Orders</a>
-      </div>
-      <div class="flex items-center space-x-4">
-        <% if Current.user %>
-          <span class="text-gray-600"><%= Current.user.email_address %></span>
-          <%= button_to "Logout", session_path, method: :delete, class: "text-gray-600 hover:text-gray-900" %>
-        <% else %>
-          <%= link_to "Login", new_session_path, class: "text-gray-600 hover:text-gray-900" %>
-        <% end %>
-      </div>
-    </div>
-  </div>
-</nav>
+<%= render 'shared/navigation', active: :coffees %>
 
 <div class="bg-white py-12 border-b">
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -127,8 +99,4 @@
   </div>
 </div>
 
-<footer class="bg-gray-50 py-12 border-t">
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-    <p class="text-gray-600">&copy; 2025 CoffeeShop. All rights reserved.</p>
-  </div>
-</footer>
+<%= render 'shared/footer' %>

@@ -1,48 +1,7 @@
-<nav class="bg-white shadow-sm sticky top-0 z-50">
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-    <div class="flex justify-between items-center h-16">
-      <div class="flex items-center">
-        <%= link_to root_path, class: "text-2xl font-bold text-amber-600" do %>
-          ☕ CoffeeShop
-        <% end %>
-      </div>
-      <div class="flex items-center space-x-4">
-        <% if Current.user %>
-          <span class="text-gray-600"><%= Current.user.email_address %></span>
-          <%= button_to "Logout", session_path, method: :delete, class: "text-gray-600 hover:text-gray-900" %>
-        <% else %>
-          <%= link_to "Login", new_session_path, class: "text-gray-600 hover:text-gray-900" %>
-        <% end %>
-      </div>
-    </div>
-  </div>
-</nav>
+<%= render 'shared/navigation', show_menu: false %>
 
 <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12 bg-gray-50 min-h-screen">
-  <div class="mb-8">
-    <div class="flex items-center justify-center gap-4">
-      <div class="flex items-center">
-        <div class="w-10 h-10 bg-amber-600 text-white rounded-full flex items-center justify-center font-bold">
-          1
-        </div>
-        <span class="ml-2 font-semibold text-amber-600">Shipping</span>
-      </div>
-      <div class="w-16 h-1 bg-gray-300"></div>
-      <div class="flex items-center">
-        <div class="w-10 h-10 bg-gray-300 text-white rounded-full flex items-center justify-center font-bold">
-          2
-        </div>
-        <span class="ml-2 text-gray-500">Payment</span>
-      </div>
-      <div class="w-16 h-1 bg-gray-300"></div>
-      <div class="flex items-center">
-        <div class="w-10 h-10 bg-gray-300 text-white rounded-full flex items-center justify-center font-bold">
-          3
-        </div>
-        <span class="ml-2 text-gray-500">Confirmation</span>
-      </div>
-    </div>
-  </div>
+  <%= render 'checkout/progress', step: 1 %>
 
   <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
     <div class="lg:col-span-2">
@@ -120,40 +79,7 @@
     </div>
 
     <div class="lg:col-span-1">
-      <div class="bg-white rounded-xl shadow-sm p-6 sticky top-24">
-        <h2 class="text-xl font-bold text-gray-900 mb-4">Order Summary</h2>
-
-        <div class="space-y-3 mb-4 pb-4 border-b border-gray-200">
-          <% @cart.order_items.each do |item| %>
-            <div class="flex justify-between text-sm">
-              <span class="text-gray-600"><%= item.coffee_name %> (<%= item.size.titleize %>) × <%= item.quantity %></span>
-              <span class="font-semibold text-gray-900">$<%= number_with_precision(item.subtotal, precision: 2) %></span>
-            </div>
-          <% end %>
-        </div>
-
-        <div class="space-y-2 mb-4 pb-4 border-b border-gray-200">
-          <div class="flex justify-between text-sm text-gray-600">
-            <span>Subtotal</span>
-            <span class="font-semibold">$<%= number_with_precision(@cart.subtotal, precision: 2) %></span>
-          </div>
-          <div class="flex justify-between text-sm text-gray-600">
-            <span>Shipping</span>
-            <span class="font-semibold text-green-600"><%= @cart.shipping_cost == 0 ? 'FREE' : "$#{number_with_precision(@cart.shipping_cost, precision: 2)}" %></span>
-          </div>
-          <div class="flex justify-between text-sm text-gray-600">
-            <span>Tax</span>
-            <span class="font-semibold">$<%= number_with_precision(@cart.tax, precision: 2) %></span>
-          </div>
-        </div>
-
-        <div class="flex justify-between items-center">
-          <span class="text-lg font-bold text-gray-900">Total</span>
-          <span class="text-2xl font-bold text-amber-600">
-            $<%= number_with_precision(@cart.grand_total, precision: 2) %>
-          </span>
-        </div>
-      </div>
+      <%= render 'checkout/order_summary', order: @cart %>
     </div>
   </div>
 </div>

@@ -1,0 +1,41 @@
+<div class="bg-white rounded-xl shadow-sm p-6 sticky top-24">
+  <h2 class="text-xl font-bold text-gray-900 mb-4">Order Summary</h2>
+
+  <div class="space-y-3 mb-4 pb-4 border-b border-gray-200">
+    <% order.order_items.each do |item| %>
+      <div class="flex justify-between text-sm">
+        <span class="text-gray-600"><%= item.coffee_name %> (<%= item.size.titleize %>) × <%= item.quantity %></span>
+        <span class="font-semibold text-gray-900">$<%= number_with_precision(item.subtotal, precision: 2) %></span>
+      </div>
+    <% end %>
+  </div>
+
+  <div class="space-y-2 mb-4 pb-4 border-b border-gray-200">
+    <div class="flex justify-between text-sm text-gray-600">
+      <span>Subtotal</span>
+      <span class="font-semibold">$<%= number_with_precision(order.subtotal, precision: 2) %></span>
+    </div>
+    <div class="flex justify-between text-sm text-gray-600">
+      <span>Shipping</span>
+      <span class="font-semibold text-green-600"><%= order.shipping_cost == 0 ? 'FREE' : "$#{number_with_precision(order.shipping_cost, precision: 2)}" %></span>
+    </div>
+    <div class="flex justify-between text-sm text-gray-600">
+      <span>Tax</span>
+      <span class="font-semibold">$<%= number_with_precision(order.tax, precision: 2) %></span>
+    </div>
+  </div>
+
+  <div class="flex justify-between items-center">
+    <span class="text-lg font-bold text-gray-900"><%= local_assigns[:completed] ? 'Total Paid' : 'Total' %></span>
+    <span class="text-2xl font-bold <%= local_assigns[:completed] ? 'text-green-600' : 'text-amber-600' %>">
+      $<%= number_with_precision(order.grand_total, precision: 2) %>
+    </span>
+  </div>
+
+  <% if local_assigns[:completed] %>
+    <div class="text-center text-sm text-gray-600 mt-6">
+      <p>Order placed on</p>
+      <p class="font-semibold"><%= order.updated_at.strftime("%B %d, %Y at %I:%M %p") %></p>
+    </div>
+  <% end %>
+</div>
