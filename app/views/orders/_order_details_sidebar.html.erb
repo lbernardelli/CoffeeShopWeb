@@ -1,0 +1,44 @@
+<div class="lg:col-span-1 space-y-6">
+  <div class="bg-white rounded-xl shadow-sm p-6">
+    <h2 class="text-lg font-bold text-gray-900 mb-4">Shipping Address</h2>
+    <div class="text-gray-700 space-y-1">
+      <p class="font-semibold"><%= order.shipping_name %></p>
+      <p><%= order.shipping_address %></p>
+      <p><%= order.shipping_city %>, <%= order.shipping_state %> <%= order.shipping_zip %></p>
+      <p><%= order.shipping_country %></p>
+    </div>
+  </div>
+
+  <div class="bg-white rounded-xl shadow-sm p-6">
+    <h2 class="text-lg font-bold text-gray-900 mb-4">Payment Method</h2>
+    <div class="text-gray-700">
+      <p class="font-semibold mb-1"><%= order.payment_method&.titleize || "Credit Card" %></p>
+      <p class="text-sm text-gray-500">Transaction ID:</p>
+      <p class="text-xs font-mono text-gray-600 break-all"><%= order.payment_transaction_id %></p>
+    </div>
+  </div>
+
+  <div class="bg-white rounded-xl shadow-sm p-6">
+    <h2 class="text-lg font-bold text-gray-900 mb-4">Order Total</h2>
+    <div class="space-y-2">
+      <div class="flex justify-between text-gray-600">
+        <span>Subtotal</span>
+        <span>$<%= number_with_precision(order.subtotal, precision: 2) %></span>
+      </div>
+      <div class="flex justify-between text-gray-600">
+        <span>Shipping</span>
+        <span class="<%= order.shipping_cost == 0 ? 'text-green-600 font-semibold' : '' %>">
+          <%= order.shipping_cost == 0 ? 'FREE' : "$#{number_with_precision(order.shipping_cost, precision: 2)}" %>
+        </span>
+      </div>
+      <div class="flex justify-between text-gray-600">
+        <span>Tax</span>
+        <span>$<%= number_with_precision(order.tax, precision: 2) %></span>
+      </div>
+      <div class="flex justify-between items-center pt-3 border-t border-gray-200">
+        <span class="text-lg font-bold text-gray-900">Total</span>
+        <span class="text-2xl font-bold text-amber-600">$<%= number_with_precision(order.grand_total, precision: 2) %></span>
+      </div>
+    </div>
+  </div>
+</div>

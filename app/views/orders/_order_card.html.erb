@@ -1,0 +1,36 @@
+<div class="bg-white rounded-xl shadow-sm overflow-hidden hover:shadow-md transition">
+  <div class="bg-gray-50 px-6 py-4 border-b border-gray-200">
+    <div class="flex flex-wrap items-center justify-between gap-4">
+      <div class="flex flex-wrap items-center gap-6">
+        <div>
+          <span class="text-sm text-gray-500">Order Number</span>
+          <p class="font-semibold text-gray-900">#<%= order.id %></p>
+        </div>
+        <div>
+          <span class="text-sm text-gray-500">Date</span>
+          <p class="font-semibold text-gray-900"><%= order.updated_at.strftime("%B %d, %Y") %></p>
+        </div>
+        <div>
+          <span class="text-sm text-gray-500">Total</span>
+          <p class="font-semibold text-amber-600">$<%= number_with_precision(order.grand_total, precision: 2) %></p>
+        </div>
+        <div>
+          <span class="text-sm text-gray-500">Status</span>
+          <p class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-green-100 text-green-800">
+            <%= order.status.titleize %>
+          </p>
+        </div>
+      </div>
+      <%= link_to "View Details", order_path(order), class: "text-amber-600 hover:text-amber-700 font-semibold text-sm" %>
+    </div>
+  </div>
+
+  <div class="p-6">
+    <%= render 'orders/order_items_list', order: order, compact: true %>
+
+    <div class="mt-6 pt-6 border-t border-gray-200 flex gap-3">
+      <%= link_to "Reorder", coffees_path, class: "flex-1 py-2 px-4 bg-amber-600 text-white rounded-lg hover:bg-amber-700 transition text-center font-semibold" %>
+      <%= link_to "View Details", order_path(order), class: "flex-1 py-2 px-4 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition text-center font-semibold" %>
+    </div>
+  </div>
+</div>

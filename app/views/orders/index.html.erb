@@ -9,66 +9,7 @@
   <% if @orders.any? %>
     <div class="space-y-6">
       <% @orders.each do |order| %>
-        <div class="bg-white rounded-xl shadow-sm overflow-hidden hover:shadow-md transition">
-          <!-- Order Header -->
-          <div class="bg-gray-50 px-6 py-4 border-b border-gray-200">
-            <div class="flex flex-wrap items-center justify-between gap-4">
-              <div class="flex flex-wrap items-center gap-6">
-                <div>
-                  <span class="text-sm text-gray-500">Order Number</span>
-                  <p class="font-semibold text-gray-900">#<%= order.id %></p>
-                </div>
-                <div>
-                  <span class="text-sm text-gray-500">Date</span>
-                  <p class="font-semibold text-gray-900"><%= order.updated_at.strftime("%B %d, %Y") %></p>
-                </div>
-                <div>
-                  <span class="text-sm text-gray-500">Total</span>
-                  <p class="font-semibold text-amber-600">$<%= number_with_precision(order.grand_total, precision: 2) %></p>
-                </div>
-                <div>
-                  <span class="text-sm text-gray-500">Status</span>
-                  <p class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-green-100 text-green-800">
-                    <%= order.status.titleize %>
-                  </p>
-                </div>
-              </div>
-              <%= link_to "View Details", order_path(order), class: "text-amber-600 hover:text-amber-700 font-semibold text-sm" %>
-            </div>
-          </div>
-
-          <!-- Order Items -->
-          <div class="p-6">
-            <div class="space-y-4">
-              <% order.order_items.each do |item| %>
-                <div class="flex items-center gap-4">
-                  <div class="w-16 h-16 <%= coffee_gradient_class(order.order_items.index(item)) %> rounded-lg flex items-center justify-center flex-shrink-0">
-                    <svg class="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 20 20">
-                      <path d="M8 16a2 2 0 002-2H6a2 2 0 002 2zM8 1.918l-.797.161A4.002 4.002 0 003 6c0 .628.134 2.197.459 3.742.16.767.376 1.566.663 2.258h6.756c.287-.692.502-1.49.663-2.258C12.866 8.197 13 6.628 13 6a4.002 4.002 0 00-4.203-3.92L8 1.917zM14.22 12c.223.447.482.801.78 1H1c.299-.199.557-.553.78-1C2.68 10.2 3 6.88 3 6c0-2.42 1.72-4.44 4.005-4.901a1 1 0 111.99 0A5.002 5.002 0 0113 6c0 .88.32 4.2 1.22 6z"/>
-                    </svg>
-                  </div>
-                  <div class="flex-1">
-                    <h3 class="font-semibold text-gray-900"><%= item.coffee_name %></h3>
-                    <p class="text-sm text-gray-600">
-                      <%= item.coffee_variant.coffee.roast_type&.titleize || "Medium" %> Roast •
-                      <%= item.size.titleize %> •
-                      Qty: <%= item.quantity %>
-                    </p>
-                  </div>
-                  <div class="text-right">
-                    <p class="font-semibold text-gray-900">$<%= number_with_precision(item.subtotal, precision: 2) %></p>
-                  </div>
-                </div>
-              <% end %>
-            </div>
-
-            <!-- Order Actions -->
-            <div class="mt-6 pt-6 border-t border-gray-200 flex gap-3">
-              <%= link_to "Reorder", coffees_path, class: "flex-1 py-2 px-4 bg-amber-600 text-white rounded-lg hover:bg-amber-700 transition text-center font-semibold" %>
-              <%= link_to "View Details", order_path(order), class: "flex-1 py-2 px-4 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition text-center font-semibold" %>
-            </div>
-          </div>
-        </div>
+        <%= render 'orders/order_card', order: order %>
       <% end %>
     </div>
   <% else %>
