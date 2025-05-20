@@ -16,7 +16,6 @@ module CoffeeApp
       # @return [CheckoutResult] Result of the checkout attempt
       def process(shipping_params:, payment_params:)
         validate_order!
-
         update_shipping_info(shipping_params)
         payment_result = process_payment(payment_params)
 
@@ -25,7 +24,8 @@ module CoffeeApp
         else
           rollback_order(payment_result)
         end
-      rescue => e
+      rescue StandardError => e
+        raise e if e.is_a?(CheckoutError)
         handle_error(e)
       end
 
@@ -34,12 +34,16 @@ module CoffeeApp
       def validate_dependencies!
         raise ArgumentError, "Order cannot be nil" if order.nil?
         raise ArgumentError, "Payment gateway cannot be nil" if payment_gateway.nil?
-        raise ArgumentError, "Payment gateway must implement PaymentGateway interface" unless
-          payment_gateway.is_a?(CoffeeApp::Payment::PaymentGateway)
+
+        required_methods = [:charge, :refund, :available?]
+        missing_methods = required_methods.reject { |method| payment_gateway.respond_to?(method) }
+
+        unless missing_methods.empty?
+          raise ArgumentError, "Payment gateway must implement PaymentGateway interface (missing: #{missing_methods.join(', ')})"
+        end
       end
 
       def validate_order!
-        raise CheckoutError, "Order must be in cart status" unless order.cart?
         raise CheckoutError, "Order must have items" unless order.has_items?
         raise CheckoutError, "Payment gateway is not available" unless payment_gateway.available?
       end
@@ -57,6 +61,8 @@ module CoffeeApp
         unless order.shipping_address_complete?
           raise CheckoutError, "Incomplete shipping information"
         end
+
+        order.save!
       end
 
       def process_payment(payment_params)

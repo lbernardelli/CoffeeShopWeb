@@ -20,7 +20,7 @@ class Order < ApplicationRecord
     existing_item = order_items.find_by(coffee_variant: coffee_variant)
 
     if existing_item
-      existing_item.update(quantity: existing_item.quantity + quantity)
+      existing_item.update!(quantity: existing_item.quantity + quantity)
     else
       order_items.create!(
         coffee_variant: coffee_variant,
@@ -30,6 +30,7 @@ class Order < ApplicationRecord
     end
 
     recalculate_total!
+    order_items.reload
     self
   end
 
