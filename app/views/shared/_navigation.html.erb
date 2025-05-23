@@ -24,6 +24,7 @@
           <%= button_to "Logout", session_path, method: :delete, class: "text-gray-600 hover:text-gray-900" %>
         <% else %>
           <%= link_to "Login", new_session_path, class: "text-gray-600 hover:text-gray-900" %>
+          <%= link_to "Sign Up", new_registration_path, class: "bg-amber-600 text-white px-4 py-2 rounded-lg font-semibold hover:bg-amber-700 transition" %>
         <% end %>
       </div>
     </div>
