@@ -11,10 +11,14 @@
           <%= link_to "Home", root_path, class: local_assigns[:active] == :home ? "text-gray-900 font-semibold border-b-2 border-amber-600" : "text-gray-600 hover:text-gray-900" %>
           <%= link_to "Coffees", coffees_path, class: local_assigns[:active] == :coffees ? "text-gray-900 font-semibold border-b-2 border-amber-600" : "text-gray-600 hover:text-gray-900" %>
           <% if Current.user %>
-            <%= link_to "Cart (#{Current.user.current_cart.order_items.sum(:quantity)})", cart_path, class: local_assigns[:active] == :cart ? "text-gray-900 font-semibold border-b-2 border-amber-600" : "text-gray-600 hover:text-gray-900" %>
+            <%= link_to cart_path, class: local_assigns[:active] == :cart ? "text-gray-900 font-semibold border-b-2 border-amber-600" : "text-gray-600 hover:text-gray-900" do %>
+              Cart (<span id="cart_count"><%= Current.user.current_cart.order_items.sum(:quantity) %></span>)
+            <% end %>
             <%= link_to "Orders", orders_path, class: local_assigns[:active] == :orders ? "text-gray-900 font-semibold border-b-2 border-amber-600" : "text-gray-600 hover:text-gray-900" %>
           <% else %>
-            <%= link_to "Cart (0)", cart_path, class: "text-gray-600 hover:text-gray-900" %>
+            <%= link_to cart_path, class: "text-gray-600 hover:text-gray-900" do %>
+              Cart (<span id="cart_count">0</span>)
+            <% end %>
           <% end %>
         </div>
       <% end %>

@@ -79,7 +79,7 @@
 
               <div class="flex justify-between items-center">
                 <span class="text-sm text-gray-600">From <span class="text-2xl font-bold text-amber-600">$<%= number_with_precision(coffee.starting_price, precision: 2) %></span></span>
-                <%= form_with url: add_item_cart_path, method: :post, data: { turbo: false }, class: "inline" do |f| %>
+                <%= form_with url: add_item_cart_path, method: :post, class: "inline" do |f| %>
                   <%= f.hidden_field :coffee_variant_id, value: coffee.coffee_variants.first&.id, data: { coffee_card_target: "variantInput" } %>
                   <%= f.submit "Add", class: "bg-amber-600 text-white px-4 py-2 rounded-lg hover:bg-amber-700 transition text-sm font-semibold cursor-pointer" %>
                 <% end %>

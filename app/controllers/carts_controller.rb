@@ -2,7 +2,7 @@ class CartsController < ApplicationController
   before_action :set_cart
 
   def show
-    @order_items = @cart.order_items.includes(coffee_variant: :coffee)
+    @order_items = @cart.order_items.includes(coffee_variant: :coffee).order(created_at: :asc)
   end
 
   def add_item
@@ -21,6 +21,7 @@ class CartsController < ApplicationController
     order_item = @cart.order_items.find(params[:order_item_id])
     order_item.destroy
     @cart.recalculate_total!
+    @cart.reload
 
     respond_to do |format|
       format.html { redirect_to cart_path, notice: "Item removed from cart." }
@@ -41,6 +42,8 @@ class CartsController < ApplicationController
       @cart.recalculate_total!
       message = "Item removed from cart."
     end
+
+    @cart.reload
 
     respond_to do |format|
       format.html { redirect_to cart_path, notice: message }

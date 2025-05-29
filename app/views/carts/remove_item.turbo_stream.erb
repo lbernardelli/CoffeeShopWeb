@@ -1,0 +1,38 @@
+<%# Update cart items list %>
+<turbo-stream action="replace" target="cart_items">
+  <template>
+    <div id="cart_items" class="lg:col-span-2 space-y-4">
+      <%= render 'carts/cart_items', order_items: @cart.order_items.includes(coffee_variant: :coffee).order(created_at: :asc) %>
+    </div>
+  </template>
+</turbo-stream>
+
+<%# Update order summary %>
+<turbo-stream action="replace" target="order_summary">
+  <template>
+    <div id="order_summary" class="lg:col-span-1">
+      <%= render 'carts/order_summary', cart: @cart %>
+    </div>
+  </template>
+</turbo-stream>
+
+<%# Update cart count in navigation %>
+<turbo-stream action="update" target="cart_count">
+  <template>
+    <%= @cart.order_items.sum(:quantity) %>
+  </template>
+</turbo-stream>
+
+<%# Show flash message %>
+<turbo-stream action="prepend" target="flash_messages">
+  <template>
+    <div id="flash_<%= Time.now.to_i %>" class="fixed top-20 right-4 z-50 bg-blue-500 text-white px-6 py-4 rounded-lg shadow-xl animate-slide-in" data-controller="flash" data-flash-duration-value="3000">
+      <div class="flex items-center gap-3">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+        </svg>
+        <span class="font-semibold">Item removed from cart</span>
+      </div>
+    </div>
+  </template>
+</turbo-stream>

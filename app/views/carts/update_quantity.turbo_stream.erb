@@ -1,0 +1,24 @@
+<%# Update cart items list %>
+<turbo-stream action="replace" target="cart_items">
+  <template>
+    <div id="cart_items" class="lg:col-span-2 space-y-4">
+      <%= render 'carts/cart_items', order_items: @cart.order_items.includes(coffee_variant: :coffee).order(created_at: :asc) %>
+    </div>
+  </template>
+</turbo-stream>
+
+<%# Update order summary %>
+<turbo-stream action="replace" target="order_summary">
+  <template>
+    <div id="order_summary" class="lg:col-span-1">
+      <%= render 'carts/order_summary', cart: @cart %>
+    </div>
+  </template>
+</turbo-stream>
+
+<%# Update cart count in navigation %>
+<turbo-stream action="update" target="cart_count">
+  <template>
+    <%= @cart.order_items.sum(:quantity) %>
+  </template>
+</turbo-stream>
