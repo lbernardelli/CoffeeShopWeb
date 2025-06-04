@@ -10,7 +10,12 @@
 # Ignore all environment files.
 /.env*
 
-/.idea/*
+# IDE - JetBrains (RubyMine, IntelliJ IDEA, etc)
+/.idea
+*.iml
+
+# IDE - VS Code
+/.vscode
 
 # Ignore all logfiles and tempfiles.
 /log/*
