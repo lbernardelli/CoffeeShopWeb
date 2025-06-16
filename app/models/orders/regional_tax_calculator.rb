@@ -13,14 +13,14 @@ class Orders::RegionalTaxCalculator < Orders::TaxCalculator
     "IN" => 0.07,   # Indiana
     "MA" => 0.0625, # Massachusetts
     "MI" => 0.06,   # Michigan
-    "MN" => 0.06875,# Minnesota
+    "MN" => 0.06875, # Minnesota
     "NY" => 0.04,   # New York
     "NC" => 0.0475, # North Carolina
     "OH" => 0.0575, # Ohio
     "PA" => 0.06,   # Pennsylvania
     "TX" => 0.0625, # Texas
     "VA" => 0.053,  # Virginia
-    "WA" => 0.065,  # Washington
+    "WA" => 0.065  # Washington
     # Add more states as needed
   }.freeze
 
@@ -33,7 +33,7 @@ class Orders::RegionalTaxCalculator < Orders::TaxCalculator
     "FR" => 0.20,   # France VAT
     "AU" => 0.10,   # Australia GST
     "JP" => 0.10,   # Japan consumption tax
-    "BR" => 0.17,   # Brazil (simplified)
+    "BR" => 0.17   # Brazil (simplified)
   }.freeze
 
   attr_reader :region, :region_type

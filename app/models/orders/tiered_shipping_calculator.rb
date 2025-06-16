@@ -69,7 +69,7 @@ class Orders::TieredShippingCalculator
   attr_reader :tiers
 
   # @param tiers [Array<ShippingTier>] Available shipping tiers
-  def initialize(tiers: [STANDARD_TIER, EXPRESS_TIER, OVERNIGHT_TIER])
+  def initialize(tiers: [ STANDARD_TIER, EXPRESS_TIER, OVERNIGHT_TIER ])
     @tiers = tiers
     validate_tiers!
   end

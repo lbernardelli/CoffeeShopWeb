@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module Checkout
   class Result
     attr_reader :success, :order, :message, :payment_result

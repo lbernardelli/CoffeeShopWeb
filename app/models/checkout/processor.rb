@@ -34,7 +34,7 @@ module Checkout
       raise ArgumentError, "Order cannot be nil" if order.nil?
       raise ArgumentError, "Payment gateway cannot be nil" if payment_gateway.nil?
 
-      required_methods = [:charge, :refund, :available?]
+      required_methods = [ :charge, :refund, :available? ]
       missing_methods = required_methods.reject { |method| payment_gateway.respond_to?(method) }
 
       unless missing_methods.empty?

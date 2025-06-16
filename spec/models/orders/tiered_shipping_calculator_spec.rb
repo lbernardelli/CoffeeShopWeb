@@ -116,7 +116,7 @@ RSpec.describe Orders::TieredShippingCalculator do
           cutoff_time: "10:00"
         )
 
-        custom_calculator = Orders::TieredShippingCalculator.new(tiers: [custom_tier])
+        custom_calculator = Orders::TieredShippingCalculator.new(tiers: [ custom_tier ])
         expect(custom_calculator.tiers.size).to eq(1)
         expect(custom_calculator.tiers.first.name).to eq("Same Day")
       end
