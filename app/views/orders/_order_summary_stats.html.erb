@@ -5,16 +5,16 @@
   </div>
   <div>
     <p class="text-sm text-gray-500 mb-1">Subtotal</p>
-    <p class="text-lg font-semibold text-gray-900">$<%= number_with_precision(order.subtotal, precision: 2) %></p>
+    <p class="text-lg font-semibold text-gray-900"><%= order.subtotal %></p>
   </div>
   <div>
     <p class="text-sm text-gray-500 mb-1">Shipping</p>
-    <p class="text-lg font-semibold <%= order.shipping_cost == 0 ? 'text-green-600' : 'text-gray-900' %>">
-      <%= order.shipping_cost == 0 ? 'FREE' : "$#{number_with_precision(order.shipping_cost, precision: 2)}" %>
+    <p class="text-lg font-semibold <%= order.shipping_cost.to_f == 0 ? 'text-green-600' : 'text-gray-900' %>">
+      <%= order.shipping_cost.to_f == 0 ? 'FREE' : order.shipping_cost %>
     </p>
   </div>
   <div>
     <p class="text-sm text-gray-500 mb-1">Total</p>
-    <p class="text-xl font-bold text-amber-600">$<%= number_with_precision(order.grand_total, precision: 2) %></p>
+    <p class="text-xl font-bold text-amber-600"><%= order.grand_total %></p>
   </div>
 </div>

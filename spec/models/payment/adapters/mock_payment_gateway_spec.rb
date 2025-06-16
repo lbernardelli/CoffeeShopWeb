@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe CoffeeApp::Payment::Adapters::MockPaymentGateway do
+RSpec.describe Payment::Adapters::MockPaymentGateway do
   subject(:gateway) { described_class.new }
 
   describe '#charge' do

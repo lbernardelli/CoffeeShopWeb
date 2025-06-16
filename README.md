@@ -20,6 +20,8 @@ It's a coffee shop. You browse coffees, add them to cart, checkout. Pretty stand
 - All tests follow Sandi Metz principles from POODR
 - Tailwind for UI because I'm not a designer
 
+I still have some work to do on the app, I'm planning to add an Admin panel where I can create some dashboards, trends, and such.
+
 ### The fun parts
 
 Click "Add to Cart" and watch the cart count update instantly. Adjust quantities and see everything recalculate. Remove items with smooth animations. All without reloading the page - that's Hotwire doing its thing.

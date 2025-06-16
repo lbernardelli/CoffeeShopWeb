@@ -13,22 +13,22 @@
   <div class="space-y-2 mb-4 pb-4 border-b border-gray-200">
     <div class="flex justify-between text-sm text-gray-600">
       <span>Subtotal</span>
-      <span class="font-semibold">$<%= number_with_precision(order.subtotal, precision: 2) %></span>
+      <span class="font-semibold"><%= order.subtotal %></span>
     </div>
     <div class="flex justify-between text-sm text-gray-600">
       <span>Shipping</span>
-      <span class="font-semibold text-green-600"><%= order.shipping_cost == 0 ? 'FREE' : "$#{number_with_precision(order.shipping_cost, precision: 2)}" %></span>
+      <span class="font-semibold text-green-600"><%= order.shipping_cost.to_f == 0 ? 'FREE' : order.shipping_cost %></span>
     </div>
     <div class="flex justify-between text-sm text-gray-600">
       <span>Tax</span>
-      <span class="font-semibold">$<%= number_with_precision(order.tax, precision: 2) %></span>
+      <span class="font-semibold"><%= order.tax %></span>
     </div>
   </div>
 
   <div class="flex justify-between items-center">
     <span class="text-lg font-bold text-gray-900"><%= local_assigns[:completed] ? 'Total Paid' : 'Total' %></span>
     <span class="text-2xl font-bold <%= local_assigns[:completed] ? 'text-green-600' : 'text-amber-600' %>">
-      $<%= number_with_precision(order.grand_total, precision: 2) %>
+      <%= order.grand_total %>
     </span>
   </div>
 

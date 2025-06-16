@@ -39,9 +39,9 @@ class CheckoutController < ApplicationController
   end
 
   def process_checkout
-    checkout_service = CoffeeApp::Services::CheckoutService.new(@cart)
+    checkout_processor = Checkout::Processor.new(@cart)
 
-    result = checkout_service.process(
+    result = checkout_processor.process(
       shipping_params: shipping_address_params,
       payment_params: payment_details_params
     )
@@ -55,7 +55,7 @@ class CheckoutController < ApplicationController
       flash.now[:alert] = result.message
       render :payment, status: :unprocessable_entity
     end
-  rescue CoffeeApp::Services::CheckoutError => e
+  rescue Checkout::CheckoutError => e
     flash.now[:alert] = e.message
     render :payment, status: :unprocessable_entity
   end

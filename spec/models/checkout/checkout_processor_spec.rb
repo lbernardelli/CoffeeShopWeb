@@ -1,10 +1,10 @@
 require 'rails_helper'
 
-RSpec.describe CoffeeApp::Services::CheckoutService do
-  subject(:service) { described_class.new(order, payment_gateway: payment_gateway) }
+RSpec.describe Checkout::Processor do
+  subject(:processor) { described_class.new(order, payment_gateway: payment_gateway) }
 
   let(:order) { create(:order, :cart, :with_items) }
-  let(:payment_gateway) { instance_double(CoffeeApp::Payment::PaymentGateway) }
+  let(:payment_gateway) { instance_double(Payment::PaymentGateway) }
 
   let(:shipping_params) do
     {
@@ -37,8 +37,8 @@ RSpec.describe CoffeeApp::Services::CheckoutService do
   describe '#initialize' do
     context 'with valid dependencies' do
       it 'accepts order and payment gateway' do
-        expect(service.order).to eq(order)
-        expect(service.payment_gateway).to eq(payment_gateway)
+        expect(processor.order).to eq(order)
+        expect(processor.payment_gateway).to eq(payment_gateway)
       end
     end
 
@@ -68,7 +68,7 @@ RSpec.describe CoffeeApp::Services::CheckoutService do
   describe '#process' do
     context 'with successful payment' do
       let(:payment_result) do
-        CoffeeApp::Payment::PaymentResult.new(
+        Payment::PaymentResult.new(
           success: true,
           transaction_id: 'txn_123',
           message: 'Payment approved'
@@ -80,7 +80,7 @@ RSpec.describe CoffeeApp::Services::CheckoutService do
       end
 
       it 'updates order with shipping information' do
-        service.process(shipping_params: shipping_params, payment_params: payment_params)
+        processor.process(shipping_params: shipping_params, payment_params: payment_params)
 
         order.reload
         expect(order.shipping_name).to eq('John Doe')
@@ -93,7 +93,7 @@ RSpec.describe CoffeeApp::Services::CheckoutService do
 
       it 'charges payment gateway with correct amount' do
         expect(payment_gateway).to receive(:charge).with(
-          amount: order.grand_total,
+          amount: order.grand_total_amount,
           payment_details: hash_including(
             card_number: '4111111111111111',
             cardholder_name: 'John Doe'
@@ -104,11 +104,11 @@ RSpec.describe CoffeeApp::Services::CheckoutService do
           )
         )
 
-        service.process(shipping_params: shipping_params, payment_params: payment_params)
+        processor.process(shipping_params: shipping_params, payment_params: payment_params)
       end
 
       it 'marks order as completed' do
-        service.process(shipping_params: shipping_params, payment_params: payment_params)
+        processor.process(shipping_params: shipping_params, payment_params: payment_params)
 
         order.reload
         expect(order.status).to eq('completed')
@@ -117,7 +117,7 @@ RSpec.describe CoffeeApp::Services::CheckoutService do
       end
 
       it 'returns successful result' do
-        result = service.process(shipping_params: shipping_params, payment_params: payment_params)
+        result = processor.process(shipping_params: shipping_params, payment_params: payment_params)
 
         expect(result).to be_success
         expect(result.order).to eq(order)
@@ -127,7 +127,7 @@ RSpec.describe CoffeeApp::Services::CheckoutService do
 
     context 'with failed payment' do
       let(:payment_result) do
-        CoffeeApp::Payment::PaymentResult.new(
+        Payment::PaymentResult.new(
           success: false,
           message: 'Card declined'
         )
@@ -138,7 +138,7 @@ RSpec.describe CoffeeApp::Services::CheckoutService do
       end
 
       it 'does not mark order as completed' do
-        service.process(shipping_params: shipping_params, payment_params: payment_params)
+        processor.process(shipping_params: shipping_params, payment_params: payment_params)
 
         order.reload
         expect(order.status).to eq('cart')
@@ -146,14 +146,14 @@ RSpec.describe CoffeeApp::Services::CheckoutService do
       end
 
       it 'preserves shipping information for retry' do
-        service.process(shipping_params: shipping_params, payment_params: payment_params)
+        processor.process(shipping_params: shipping_params, payment_params: payment_params)
 
         order.reload
         expect(order.shipping_name).to eq('John Doe')
       end
 
       it 'returns failed result with payment message' do
-        result = service.process(shipping_params: shipping_params, payment_params: payment_params)
+        result = processor.process(shipping_params: shipping_params, payment_params: payment_params)
 
         expect(result).to be_failure
         expect(result.message).to eq('Card declined')
@@ -164,27 +164,27 @@ RSpec.describe CoffeeApp::Services::CheckoutService do
       it 'raises error when order has no items' do
         empty_order = create(:order, :cart)
 
-        service = described_class.new(empty_order, payment_gateway: payment_gateway)
+        processor = described_class.new(empty_order, payment_gateway: payment_gateway)
 
         expect {
-          service.process(shipping_params: shipping_params, payment_params: payment_params)
-        }.to raise_error(CoffeeApp::Services::CheckoutError, 'Order must have items')
+          processor.process(shipping_params: shipping_params, payment_params: payment_params)
+        }.to raise_error(Checkout::CheckoutError, 'Order must have items')
       end
 
       it 'raises error when payment gateway is unavailable' do
         allow(payment_gateway).to receive(:available?).and_return(false)
 
         expect {
-          service.process(shipping_params: shipping_params, payment_params: payment_params)
-        }.to raise_error(CoffeeApp::Services::CheckoutError, 'Payment gateway is not available')
+          processor.process(shipping_params: shipping_params, payment_params: payment_params)
+        }.to raise_error(Checkout::CheckoutError, 'Payment gateway is not available')
       end
 
       it 'raises error when shipping information is incomplete' do
         incomplete_shipping = shipping_params.merge(address: '')
 
         expect {
-          service.process(shipping_params: incomplete_shipping, payment_params: payment_params)
-        }.to raise_error(CoffeeApp::Services::CheckoutError, 'Incomplete shipping information')
+          processor.process(shipping_params: incomplete_shipping, payment_params: payment_params)
+        }.to raise_error(Checkout::CheckoutError, 'Incomplete shipping information')
       end
     end
   end

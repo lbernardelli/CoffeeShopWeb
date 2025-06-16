@@ -112,11 +112,11 @@ end
 # config/initializers/payment_gateway.rb
 Rails.application.configure do
   config.payment_gateway = if Rails.env.production?
-    CoffeeApp::Payment::Adapters::StripePaymentGateway.new(
+    Payment::Adapters::StripePaymentGateway.new(
       api_key: ENV['STRIPE_SECRET_KEY']
     )
   else
-    CoffeeApp::Payment::Adapters::MockPaymentGateway.new
+    Payment::Adapters::MockPaymentGateway.new
   end
 end
 ```
@@ -127,7 +127,7 @@ end
 # app/controllers/checkout_controller.rb
 def process
   gateway = Rails.configuration.payment_gateway
-  checkout_service = CoffeeApp::Services::CheckoutService.new(@cart, payment_gateway: gateway)
+  checkout_service = Services::CheckoutService.new(@cart, payment_gateway: gateway)
 
   result = checkout_service.process(
     shipping_params: shipping_address_params,
@@ -157,7 +157,7 @@ end
 
 **Usage:**
 ```ruby
-gateway = CoffeeApp::Payment::Adapters::MockPaymentGateway.new
+gateway = Payment::Adapters::MockPaymentGateway.new
 result = gateway.charge(
   amount: 99.99,
   payment_details: { card_number: '4111111111111111' }
@@ -216,7 +216,7 @@ When writing tests, inject a mock gateway:
 
 ```ruby
 RSpec.describe CheckoutService do
-  let(:mock_gateway) { instance_double(CoffeeApp::Payment::PaymentGateway) }
+  let(:mock_gateway) { instance_double(Payment::PaymentGateway) }
   let(:service) { CheckoutService.new(order, payment_gateway: mock_gateway) }
 
   it 'processes payment through the gateway' do
@@ -225,7 +225,7 @@ RSpec.describe CheckoutService do
     )
 
     result = service.process(shipping_params: {}, payment_params: {})
-    expect(result.success?).to be true
+    expect(result.success?).to be_truthy
   end
 end
 ```

@@ -68,20 +68,46 @@ class Order < ApplicationRecord
   end
 
   def subtotal
-    total
+    Orders::Money.new(total)
   end
 
   def tax
-    subtotal * 0.09
+    tax_calculator.calculate(subtotal)
   end
 
   def shipping_cost
-    subtotal >= 50 ? 0 : 5.99
+    shipping_calculator.calculate(subtotal)
   end
 
   def grand_total
     subtotal + tax + shipping_cost
   end
+
+  def grand_total_amount
+    grand_total.to_f
+  end
+
+  # Check if order qualifies for free shipping
+  def free_shipping?
+    shipping_calculator.qualifies_for_free_shipping?(subtotal)
+  end
+
+  # Amount remaining to qualify for free shipping
+  def remaining_for_free_shipping
+    shipping_calculator.remaining_for_free_shipping(subtotal)
+  end
+
+  private
+
+  def tax_calculator
+    @tax_calculator ||= Orders::TaxCalculator.new
+  end
+
+  def shipping_calculator
+    @shipping_calculator ||= Orders::ShippingCalculator.new
+  end
+
+  public
 
   def shipping_address_complete?
     shipping_name.present? &&
