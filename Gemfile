@@ -60,7 +60,7 @@ end
 
 group :test do
   # Additional RSpec helpers
-  gem "shoulda-matchers", "~> 6.4"
+  gem "shoulda-matchers", "~> 7.0"
   gem "database_cleaner-active_record", "~> 2.2"
 end
 
